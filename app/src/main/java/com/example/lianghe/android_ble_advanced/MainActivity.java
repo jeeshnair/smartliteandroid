@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private ColorPickerView colorPickerView = null;
     private TextView txtColorValue = null;
     private CheckBox chkOverridePhysicalControls = null;
+    private CheckBox chkSyncWithSteptracker = null;
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
@@ -371,9 +372,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //add legend to chart
         Legend legend = pieChart.getLegend();
         legend.setForm(Legend.LegendForm.CIRCLE);
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
         legend.setDrawInside(false);
 
         //create pie data object
@@ -407,6 +408,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
         txtColorValue = (TextView) findViewById(R.id.txtColorValue);
         chkOverridePhysicalControls = (CheckBox) findViewById(R.id.chkBoxOverrideCircuit);
+        chkSyncWithSteptracker =(CheckBox) findViewById(R.id.chkSyncSteptracker);
 
         pieChart = findViewById(R.id.progressChart);
 
@@ -594,6 +596,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                overridePhysicalControls = chkOverridePhysicalControls.isChecked();
 
                 byte buf[] = new byte[]{(byte) 0x06, (byte) 0x00};
+                if(overridePhysicalControls) {
+                    buf[buf.length-1]= (byte)1;
+                }
+                else {
+                    buf[buf.length - 1] = (byte)0;
+                }
+
+                if(mCharacteristicTx!=null) {
+                    mCharacteristicTx.setValue(buf);
+                    mBluetoothLeService.writeCharacteristic(mCharacteristicTx);
+                }
+            }
+        });
+
+        chkSyncWithSteptracker.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                overridePhysicalControls = chkSyncWithSteptracker.isChecked();
+
+                byte buf[] = new byte[]{(byte) 0x08, (byte) 0x00};
                 if(overridePhysicalControls) {
                     buf[buf.length-1]= (byte)1;
                 }

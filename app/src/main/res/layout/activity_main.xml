@@ -171,7 +171,14 @@
         android:layout_height="wrap_content"
         android:checked="true"
         android:text="Override Physical Controls"
-        app:buttonTint="#0000FF"/> />
+        app:buttonTint="#0000FF"/>
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/chkSyncSteptracker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sync with Step Tracker"
+        app:buttonTint="#0000FF" />
 
     <LinearLayout
         android:layout_width="371dp"
@@ -198,7 +205,7 @@
 
             android:id="@+id/progressChart"
             android:layout_width= "match_parent"
-            android:layout_height="220dp"></com.github.mikephil.charting.charts.PieChart>
+            android:layout_height="205dp"></com.github.mikephil.charting.charts.PieChart>
     </LinearLayout>
 
 </LinearLayout>
