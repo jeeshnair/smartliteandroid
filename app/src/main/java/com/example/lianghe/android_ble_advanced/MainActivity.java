@@ -199,25 +199,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    // Display the received Analog/Digital read on the interface
-   /* private void readAnalogInValue(byte[] data) {
-        for (int i = 0; i < data.length; i += 3) {
-            if (data[i] == 0x0A) {
-                if (data[i + 1] == 0x01)
-                    mDigitalInBtn.setChecked(false);
-                else
-                    mDigitalInBtn.setChecked(true);
-            } else if (data[i] == 0x0B) {
-                int Value;
-
-                Value = ((data[i + 1] << 8) & 0x0000ff00)
-                        | (data[i + 2] & 0x000000ff);
-
-                mAnalogInValue.setText(Value + "");
-            }
-        }
-    }*/
-
     // Get Gatt service information for setting up the communication
     private void getGattService(BluetoothGattService gattService) {
         if (gattService == null)
@@ -342,12 +323,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         this.runOnUiThread(Timer_Tick);
     }
 
+    // Timer event handler to refresh the step tracker data set.
     private Runnable Timer_Tick = new Runnable() {
         public void run() {
             RefreshDataSet();
         }
     };
 
+    // Refreshes the step tracker data set.
     private void RefreshDataSet() {
 
         Log.d(TAG, "addDataSet started");
@@ -383,6 +366,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         pieChart.invalidate();
     }
 
+    // Starts the accelerometer and step counter sensor.
     private void StartSensor() {
         mSensorManager.registerListener(
                 this,
@@ -483,43 +467,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         });
-
-        // Send data to Duo board
-        // It has three bytes: maker, data value, reserved
-        /* mDigitalOutBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                byte buf[] = new byte[]{(byte) 0x01, (byte) 0x00, (byte) 0x00};
-
-                if (isChecked == true)
-                    buf[1] = 0x01;
-                else
-                    buf[1] = 0x00;
-
-                mCharacteristicTx.setValue(buf);
-                mBluetoothLeService.writeCharacteristic(mCharacteristicTx);
-            }
-        });
-
-        mAnalogInBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                byte[] buf = new byte[]{(byte) 0xA0, (byte) 0x00, (byte) 0x00};
-
-                if (isChecked == true)
-                    buf[1] = 0x01;
-                else
-                    buf[1] = 0x00;
-
-                mCharacteristicTx.setValue(buf);
-                mBluetoothLeService.writeCharacteristic(mCharacteristicTx);
-            }
-        });*/
 
         // Configure the PWM Seekbar
         mPWMSeekBar.setEnabled(false);
@@ -700,6 +647,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    // Infer step from accelerometer data.
     void InferStepFromAccelerometerData(SensorEvent event) {
         try {
             readingCount = readingCount + 1;
